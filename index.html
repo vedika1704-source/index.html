@@ -263,6 +263,54 @@ footer {
         font-size: 30px;
     }
 }
+/* DAILY THOUGHT & CURRENT AFFAIRS */
+
+.daily-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-top: 18px;
+}
+
+.thought-card {
+    background: linear-gradient(135deg, #fff7b2, #ffe7a8);
+}
+
+.news-card {
+    background: linear-gradient(135deg, #e7f4ff, #f4edff);
+}
+
+.news-item {
+    padding: 12px;
+    margin: 9px 0;
+    background: rgba(255,255,255,0.75);
+    border-radius: 12px;
+    line-height: 1.45;
+}
+
+.news-item strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.newsDate {
+    font-size: 12px;
+    color: #777;
+}
+
+.newsNote {
+    font-size: 12px;
+    margin-top: 12px;
+    color: #777;
+}
+
+@media(max-width:650px) {
+
+    .daily-section {
+        grid-template-columns: 1fr;
+    }
+
+}
 </style>
 </head>
 
@@ -352,7 +400,26 @@ footer {
         </div>
 
     </div>
+<!-- DAILY THOUGHT & CURRENT AFFAIRS -->
 
+<div class="daily-section">
+
+    <div class="card thought-card">
+        <h3>💭 Thought of the Day</h3>
+        <p id="dailyThought"></p>
+    </div>
+
+    <div class="card news-card">
+        <h3>📰 Current Affairs</h3>
+
+        <div id="currentAffairs"></div>
+
+        <p class="newsNote">
+            🗓️ Updated content can be added regularly.
+        </p>
+    </div>
+
+</div>
 
     <!-- SMILY CHATBOT -->
 
@@ -374,33 +441,7 @@ footer {
 
         </div>
 
-        <div class="chatInput">
-            <input
-                type="text"
-                id="userInput"
-                placeholder="Talk to Smily..."
-                onkeydown="if(event.key==='Enter') sendMessage()"
-            >
-
-            <button onclick="sendMessage()">Send</button>
-        </div>
-
-    </div>
-
-
-    <button class="fixMood" onclick="changeMood()">
-        🔄 Fix Mood / Choose Another Mood
-    </button>
-
-</section>
-
-<footer>
-    Made with ❤️ for happier moments
-</footer>
-
-</div>
-
-
+        
 <script>
 
 const moodData = {
@@ -683,6 +724,137 @@ function escapeHTML(text) {
     return div.innerHTML;
 
 }
+/* ================================
+   DAILY THOUGHTS
+================================ */
+
+const dailyThoughts = [
+
+    "Every small step you take today can become a big achievement tomorrow. 🌱",
+
+    "You don't have to be perfect. You just have to keep learning. ⭐",
+
+    "A kind word can make someone's entire day better. 😊",
+
+    "Believe in progress, not perfection. 🚀",
+
+    "Your future is built by the little things you do today. 💫",
+
+    "Don't compare your chapter 1 with someone else's chapter 20. 📖",
+
+    "Sometimes the best way forward is simply to take one more step. 👣",
+
+    "Your ideas have value. Give them a chance to grow. 🌻",
+
+    "Be curious. Ask questions. Learn something new today. 🧠",
+
+    "A positive thought can be the beginning of a positive action. ☀️"
+
+];
+
+
+function showDailyThought() {
+
+    const today = new Date();
+
+    /*
+       Creates a number based on the date.
+       Therefore the thought changes automatically each day.
+    */
+
+    const dayNumber =
+        today.getFullYear() * 10000 +
+        (today.getMonth() + 1) * 100 +
+        today.getDate();
+
+    const index = dayNumber % dailyThoughts.length;
+
+    document.getElementById("dailyThought").textContent =
+        dailyThoughts[index];
+
+}
+
+
+/* ================================
+   CURRENT AFFAIRS
+================================ */
+
+/*
+   These are sample current-affairs entries.
+
+   IMPORTANT:
+   News changes every day, so replace these
+   entries regularly or connect this section
+   to a news API/backend later.
+*/
+
+const currentAffairs = [
+
+    {
+        title: "🇮🇳 BRICS Summit",
+        text: "India hosted the 18th BRICS Summit in New Delhi in September 2026.",
+        date: "September 2026"
+    },
+
+    {
+        title: "🌍 India–China Relations",
+        text: "Indian Prime Minister Narendra Modi and Chinese President Xi Jinping met during the BRICS summit and discussed improving bilateral relations.",
+        date: "September 2026"
+    },
+
+    {
+        title: "💻 Digital Payments",
+        text: "India has been pushing for stronger cross-border digital payment cooperation among BRICS countries.",
+        date: "September 2026"
+    },
+
+    {
+        title: "🚀 Space",
+        text: "India continues to expand its ambitions in space technology and has discussed plans for an Indian space station.",
+        date: "September 2026"
+    }
+
+];
+
+
+function showCurrentAffairs() {
+
+    const container =
+        document.getElementById("currentAffairs");
+
+    container.innerHTML = "";
+
+    currentAffairs.forEach(news => {
+
+        container.innerHTML += `
+
+            <div class="news-item">
+
+                <strong>${news.title}</strong>
+
+                <div>
+                    ${news.text}
+                </div>
+
+                <div class="newsDate">
+                    ${news.date}
+                </div>
+
+            </div>
+
+        `;
+
+    });
+
+}
+
+
+/* ================================
+   START DAILY CONTENT
+================================ */
+
+showDailyThought();
+showCurrentAffairs();
 
 </script>
 
