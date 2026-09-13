@@ -1,0 +1,690 @@
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smily - Your Mood Friend</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: linear-gradient(135deg, #fff4c4, #ffe0ec, #dff5ff);
+    min-height: 100vh;
+    color: #333;
+}
+
+.app {
+    max-width: 900px;
+    margin: auto;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+header {
+    text-align: center;
+    padding: 20px;
+}
+
+.logo {
+    font-size: 55px;
+    animation: float 2.5s infinite ease-in-out;
+}
+
+@keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+header h1 {
+    font-size: 38px;
+    color: #ff6b6b;
+}
+
+header p {
+    margin-top: 8px;
+    color: #666;
+}
+
+/* MOOD SCREEN */
+
+#moodScreen {
+    text-align: center;
+    padding: 30px 10px;
+}
+
+#moodScreen h2 {
+    font-size: 28px;
+    margin-bottom: 25px;
+}
+
+.moods {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.mood {
+    background: white;
+    border: none;
+    border-radius: 20px;
+    padding: 20px 10px;
+    cursor: pointer;
+    font-size: 18px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    transition: 0.25s;
+}
+
+.mood:hover {
+    transform: translateY(-5px) scale(1.03);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.13);
+}
+
+.mood span {
+    display: block;
+    font-size: 40px;
+    margin-bottom: 8px;
+}
+
+/* RESULT */
+
+#resultScreen {
+    display: none;
+}
+
+.moodTitle {
+    text-align: center;
+    background: rgba(255,255,255,0.8);
+    padding: 25px;
+    border-radius: 25px;
+    margin-bottom: 20px;
+}
+
+.moodTitle .bigEmoji {
+    font-size: 65px;
+}
+
+.moodTitle h2 {
+    margin-top: 10px;
+    font-size: 30px;
+}
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+}
+
+.card {
+    background: rgba(255,255,255,0.92);
+    border-radius: 22px;
+    padding: 22px;
+    box-shadow: 0 7px 22px rgba(0,0,0,0.08);
+}
+
+.card h3 {
+    margin-bottom: 13px;
+    color: #ff6b6b;
+}
+
+.card ul {
+    padding-left: 20px;
+}
+
+.card li {
+    margin: 9px 0;
+    line-height: 1.4;
+}
+
+.joke {
+    background: #fff8c7;
+}
+
+.jokeText {
+    font-size: 18px;
+    line-height: 1.5;
+}
+
+/* SMILY */
+
+.smily {
+    margin-top: 20px;
+    background: white;
+    border-radius: 25px;
+    padding: 22px;
+    box-shadow: 0 7px 22px rgba(0,0,0,0.08);
+}
+
+.smilyHeader {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 15px;
+}
+
+.robot {
+    font-size: 48px;
+}
+
+.smilyHeader h3 {
+    color: #6c63ff;
+}
+
+.chatBox {
+    height: 230px;
+    overflow-y: auto;
+    background: #f6f6ff;
+    border-radius: 15px;
+    padding: 15px;
+    margin-bottom: 12px;
+}
+
+.message {
+    padding: 10px 13px;
+    border-radius: 15px;
+    margin: 7px 0;
+    max-width: 85%;
+    line-height: 1.4;
+}
+
+.bot {
+    background: #e4e2ff;
+}
+
+.user {
+    background: #d9ffd9;
+    margin-left: auto;
+}
+
+.chatInput {
+    display: flex;
+    gap: 8px;
+}
+
+.chatInput input {
+    flex: 1;
+    padding: 13px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    font-size: 15px;
+}
+
+.chatInput button {
+    border: none;
+    background: #6c63ff;
+    color: white;
+    padding: 0 18px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+/* FIX MOOD */
+
+.fixMood {
+    width: 100%;
+    margin-top: 25px;
+    padding: 16px;
+    border: none;
+    border-radius: 18px;
+    background: #ff6b6b;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.fixMood:hover {
+    transform: scale(1.02);
+    background: #ff5252;
+}
+
+footer {
+    text-align: center;
+    padding: 25px 0 10px;
+    color: #777;
+    font-size: 13px;
+}
+
+@media(max-width:650px) {
+    .moods {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    header h1 {
+        font-size: 30px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header>
+    <div class="logo">🤖😊</div>
+    <h1>Smily</h1>
+    <p>Your little friend for better moments</p>
+</header>
+
+<!-- MOOD SELECTION -->
+
+<section id="moodScreen">
+
+    <h2>What's your current mood?</h2>
+
+    <div class="moods">
+
+        <button class="mood" onclick="selectMood('happy')">
+            <span>😄</span>
+            Happy
+        </button>
+
+        <button class="mood" onclick="selectMood('sad')">
+            <span>😔</span>
+            Sad
+        </button>
+
+        <button class="mood" onclick="selectMood('angry')">
+            <span>😡</span>
+            Angry
+        </button>
+
+        <button class="mood" onclick="selectMood('stressed')">
+            <span>😰</span>
+            Stressed
+        </button>
+
+        <button class="mood" onclick="selectMood('bored')">
+            <span>🥱</span>
+            Bored
+        </button>
+
+        <button class="mood" onclick="selectMood('tired')">
+            <span>😴</span>
+            Tired
+        </button>
+
+    </div>
+
+</section>
+
+
+<!-- RESULT SCREEN -->
+
+<section id="resultScreen">
+
+    <div class="moodTitle">
+        <div class="bigEmoji" id="resultEmoji">😊</div>
+        <h2 id="resultTitle">Your Mood</h2>
+        <p id="resultMessage"></p>
+    </div>
+
+    <div class="cards">
+
+        <div class="card">
+            <h3>💡 Things You Can Try</h3>
+            <ul id="ideas"></ul>
+        </div>
+
+        <div class="card">
+            <h3>🍎 Food Ideas</h3>
+            <ul id="food"></ul>
+        </div>
+
+        <div class="card joke">
+            <h3>😂 Smily's Joke</h3>
+            <p class="jokeText" id="joke"></p>
+        </div>
+
+        <div class="card">
+            <h3>🌈 Tiny Reminder</h3>
+            <p id="reminder"></p>
+        </div>
+
+    </div>
+
+
+    <!-- SMILY CHATBOT -->
+
+    <div class="smily">
+
+        <div class="smilyHeader">
+            <div class="robot">🤖</div>
+            <div>
+                <h3>Smily</h3>
+                <p>Your friendly mood buddy</p>
+            </div>
+        </div>
+
+        <div class="chatBox" id="chatBox">
+
+            <div class="message bot">
+                Hey! I'm Smily 😊 Tell me what's on your mind.
+            </div>
+
+        </div>
+
+        <div class="chatInput">
+            <input
+                type="text"
+                id="userInput"
+                placeholder="Talk to Smily..."
+                onkeydown="if(event.key==='Enter') sendMessage()"
+            >
+
+            <button onclick="sendMessage()">Send</button>
+        </div>
+
+    </div>
+
+
+    <button class="fixMood" onclick="changeMood()">
+        🔄 Fix Mood / Choose Another Mood
+    </button>
+
+</section>
+
+<footer>
+    Made with ❤️ for happier moments
+</footer>
+
+</div>
+
+
+<script>
+
+const moodData = {
+
+    happy: {
+        emoji: "😄",
+        title: "You're feeling Happy!",
+        message: "That's wonderful! Let's keep that good energy going.",
+        ideas: [
+            "Share your smile with someone",
+            "Listen to your favorite song",
+            "Write down one thing you're grateful for",
+            "Do something creative",
+            "Make someone else laugh"
+        ],
+        food: [
+            "Fresh fruit 🍓",
+            "Yogurt with fruit 🍓",
+            "A tasty sandwich 🥪",
+            "Your favorite healthy snack"
+        ],
+        joke: "Why did the computer smile? Because it finally found its cache of happiness! 😂",
+        reminder: "A good mood is even better when you share it."
+    },
+
+    sad: {
+        emoji: "😔",
+        title: "It's okay to feel Sad",
+        message: "You don't have to fix everything immediately. Be gentle with yourself.",
+        ideas: [
+            "Talk to someone you trust",
+            "Listen to calming music",
+            "Take a short walk",
+            "Write down what you're feeling",
+            "Do something comforting that you enjoy"
+        ],
+        food: [
+            "Warm soup 🍲",
+            "Banana 🍌",
+            "Oatmeal 🥣",
+            "A warm glass of milk 🥛"
+        ],
+        joke: "Why did the cloud bring an umbrella? It wanted to be prepared for its own mood swings! ☁️😂",
+        reminder: "Feelings can change. You deserve support while you're having a difficult moment."
+    },
+
+    angry: {
+        emoji: "😡",
+        title: "Looks like you're Angry",
+        message: "Let's give your brain a little space before making any big decisions.",
+        ideas: [
+            "Take some slow breaths",
+            "Step away from the situation for a few minutes",
+            "Write down what made you angry",
+            "Talk calmly with someone you trust",
+            "Try some gentle stretching"
+        ],
+        food: [
+            "Water 💧",
+            "Fruit 🍎",
+            "Yogurt 🥛",
+            "A simple balanced meal 🍚"
+        ],
+        joke: "Why was the pencil angry? Because it felt like everyone was getting on its point! ✏️😂",
+        reminder: "Being angry doesn't make you a bad person. What matters is what you do with the feeling."
+    },
+
+    stressed: {
+        emoji: "😰",
+        title: "You're feeling Stressed",
+        message: "Let's slow things down and handle one small thing at a time.",
+        ideas: [
+            "Take five slow breaths",
+            "Break your task into tiny steps",
+            "Drink some water",
+            "Take a short screen break",
+            "Talk to someone you trust"
+        ],
+        food: [
+            "Banana 🍌",
+            "Nuts, if suitable for you 🥜",
+            "Oatmeal 🥣",
+            "Vegetable soup 🥕"
+        ],
+        joke: "Why don't elevators ever get stressed? They know how to take things one level at a time! 😂",
+        reminder: "You don't have to solve your whole day in one minute."
+    },
+
+    bored: {
+        emoji: "🥱",
+        title: "You're feeling Bored",
+        message: "Perfect! Smily has some ideas to add a little excitement.",
+        ideas: [
+            "Learn a random new fact",
+            "Draw something silly",
+            "Try a new hobby",
+            "Make a funny paper airplane",
+            "Create a mini playlist"
+        ],
+        food: [
+            "Make a colorful fruit bowl 🍉",
+            "Popcorn 🍿",
+            "Smoothie 🥤",
+            "A favorite snack"
+        ],
+        joke: "Why did the book go to the doctor? Because it had too many problems! 📚😂",
+        reminder: "Boredom can sometimes be the beginning of a really creative idea."
+    },
+
+    tired: {
+        emoji: "😴",
+        title: "You're feeling Tired",
+        message: "Your body and brain might need a little recharge.",
+        ideas: [
+            "Drink some water",
+            "Take a short rest",
+            "Stretch gently",
+            "Put your phone away for a little while",
+            "If it's bedtime, try getting some sleep"
+        ],
+        food: [
+            "Banana 🍌",
+            "Oatmeal 🥣",
+            "Fruit 🍎",
+            "A balanced meal with protein and vegetables"
+        ],
+        joke: "Why did the pillow get promoted? Because it was always supporting everyone! 🛏️😂",
+        reminder: "Rest isn't laziness. Your brain needs breaks too."
+    }
+
+};
+
+
+let currentMood = "";
+
+
+function selectMood(mood) {
+
+    currentMood = mood;
+
+    const data = moodData[mood];
+
+    document.getElementById("moodScreen").style.display = "none";
+    document.getElementById("resultScreen").style.display = "block";
+
+    document.getElementById("resultEmoji").textContent = data.emoji;
+    document.getElementById("resultTitle").textContent = data.title;
+    document.getElementById("resultMessage").textContent = data.message;
+
+    document.getElementById("ideas").innerHTML =
+        data.ideas.map(item => `<li>${item}</li>`).join("");
+
+    document.getElementById("food").innerHTML =
+        data.food.map(item => `<li>${item}</li>`).join("");
+
+    document.getElementById("joke").textContent = data.joke;
+    document.getElementById("reminder").textContent = data.reminder;
+
+    document.getElementById("chatBox").innerHTML = `
+        <div class="message bot">
+            Hi! I'm Smily 🤖😊 I see you're feeling ${mood}.
+            Want to talk about it?
+        </div>
+    `;
+}
+
+
+function changeMood() {
+
+    document.getElementById("resultScreen").style.display = "none";
+    document.getElementById("moodScreen").style.display = "block";
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+}
+
+
+function sendMessage() {
+
+    const input = document.getElementById("userInput");
+    const message = input.value.trim();
+
+    if (!message) return;
+
+    const chatBox = document.getElementById("chatBox");
+
+    chatBox.innerHTML += `
+        <div class="message user">
+            ${escapeHTML(message)}
+        </div>
+    `;
+
+    input.value = "";
+
+    setTimeout(() => {
+
+        const reply = getSmilyReply(message.toLowerCase());
+
+        chatBox.innerHTML += `
+            <div class="message bot">
+                ${reply}
+            </div>
+        `;
+
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+    }, 500);
+}
+
+
+function getSmilyReply(message) {
+
+    if (
+        message.includes("sad") ||
+        message.includes("unhappy") ||
+        message.includes("cry")
+    ) {
+        return "I'm sorry you're having a rough moment 💛. Try taking things one small step at a time. You could also talk to someone you trust.";
+    }
+
+    if (
+        message.includes("angry") ||
+        message.includes("mad")
+    ) {
+        return "Let's give that anger some breathing room 😌. A few slow breaths or a short break can help you decide what to do next.";
+    }
+
+    if (
+        message.includes("stress") ||
+        message.includes("worried") ||
+        message.includes("anxious")
+    ) {
+        return "That sounds like a lot to carry. 🌱 Try focusing only on the next small thing you can control.";
+    }
+
+    if (
+        message.includes("bored")
+    ) {
+        return "Challenge accepted! 😎 Try drawing something ridiculous, learning a weird fact, or making up a five-minute challenge.";
+    }
+
+    if (
+        message.includes("tired") ||
+        message.includes("sleepy")
+    ) {
+        return "Your brain deserves a recharge 🔋. If you can, take a break and get some rest.";
+    }
+
+    if (
+        message.includes("joke") ||
+        message.includes("funny")
+    ) {
+        return "Okay, here's one 😂: Why did the smartphone need glasses? Because it lost its contacts!";
+    }
+
+    if (
+        message.includes("hello") ||
+        message.includes("hi") ||
+        message.includes("hey")
+    ) {
+        return "Hii! 🤖😊 Smily reporting for friendship duty! What's happening?";
+    }
+
+    if (
+        message.includes("thank")
+    ) {
+        return "You're very welcome! 😊 Remember, you don't have to handle every feeling alone.";
+    }
+
+    return "I'm listening 😊. Tell me a little more. Sometimes putting feelings into words can make them easier to understand.";
+}
+
+
+function escapeHTML(text) {
+
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+
+}
+
+</script>
+
+</body>
+</html>
